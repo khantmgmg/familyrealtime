@@ -325,29 +325,31 @@ const htmlContent = `
           localPeerConnection = await createPeerConnection(); // This will also set up the ontrack listener
           console.log("Local RTCPeerConnection created.");
 
-
           // Add local tracks to our peer connection for sending (sendonly)
+          // Store the transceiver objects themselves here
           const transceivers = localStream.getTracks().map((track) =>
             localPeerConnection.addTransceiver(track, {
               direction: "sendonly",
             }),
           );
-          const localTracksInfo = transceivers.map(({ mid, sender }) => ({
-            mid,
-            trackName: sender.track?.id,
-            kind: sender.track?.kind,
-          }));
-          console.log("Local tracks added to peer connection.");
 
-
+          // --- IMPORTANT: These lines calculate localTracksInfo AFTER SDP is generated ---
           // Create and set local offer
           const localOffer = await localPeerConnection.createOffer();
           await localPeerConnection.setLocalDescription(localOffer);
           console.log("Local offer created and set.");
 
+          // NOW, after setLocalDescription(), the transceiver.mid should be populated
+          const localTracksInfo = transceivers.map(({ mid, sender }) => ({
+            mid,
+            trackName: sender.track?.id,
+            kind: sender.track?.kind,
+          }));
+          console.log("Local tracks added to peer connection, MIDs populated:", localTracksInfo.map(t => t.mid)); // Added log to verify MIDs
+
           // Push our tracks to the Cloudflare Calls API
           const pushTracksResponse = await fetch(
-            API_BASE + '/sessions/' + localSessionId + '/tracks/new', // Changed to concatenation
+            API_BASE + '/sessions/' + localSessionId + '/tracks/new',
             {
               method: "POST",
               headers,
@@ -358,20 +360,21 @@ const htmlContent = `
                 },
                 tracks: localTracksInfo.map((t) => ({
                   location: "local",
-                  mid: t.mid,
+                  mid: t.mid, // This will now have a value like "0" or "1"
                   trackName: t.trackName,
                 })),
               }),
             },
           ).then((res) => res.json());
 
+          // Handle the response from pushing tracks (this part stays the same)
           await localPeerConnection.setRemoteDescription(
             new RTCSessionDescription(pushTracksResponse.sessionDescription),
           );
           console.log("Pushed local tracks to Calls API and set remote description.");
 
           // 4. Connect to the WebSocket signaling server
-          ws = new WebSocket('ws://' + location.host + '/websocket?room=' + roomId); // Changed to concatenation
+          ws = new WebSocket('ws://' + location.host + '/websocket?room=' + roomId);
 
           ws.onopen = () => {
             console.log("WebSocket connected to signaling server!");
@@ -422,6 +425,7 @@ const htmlContent = `
           cleanupSession();
         }
       }
+
 
       function leaveRoom() {
         if (ws) {
