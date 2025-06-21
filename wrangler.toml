@@ -17,3 +17,10 @@ new_sqlite_classes = [ "ChatRoom" ] # List the new Durable Object classes you ar
 
 [vars]
 # APP_ID = "YOUR_CLOUDFLARE_CALLS_APP_ID_HERE" # Only uncomment for local dev, remove for production
+
+# wrangler.toml (wrangler v3.88.0^)
+[observability.logs]
+enabled = true
+
+
+
