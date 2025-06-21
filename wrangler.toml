@@ -1,19 +1,19 @@
-name = "familyrealtime"
-main = "src/worker.js"
-workers_dev = true
-compatibility_date = "2025-06-21"
-
-[durable_objects]
-bindings = [
-  { name = "CHAT_ROOM", class_name = "ChatRoom" } # This is the crucial Durable Object binding
-]
-
 # wrangler.toml
 
 name = "testrealtime" # Or your desired Worker name
 main = "src/index.js" # Or "src/worker.js", depending on your file structure
 compatibility_date = "2024-05-18" # Keep a recent date (or current date if you want)
 
+[durable_objects]
+bindings = [
+  { name = "CHAT_ROOM", class_name = "ChatRoom" }
+]
+
+# --- ADD THIS NEW SECTION BELOW YOUR [durable_objects] ---
 [[migrations]]
-tag = "v1"
-new_classes = [ "ChatRoom" ]
+tag = "v1" # A unique tag for this migration. For the first one, "v1" is common.
+new_sqlite_classes = [ "ChatRoom" ] # List the new Durable Object classes you are introducing.
+# --------------------------------------------------------
+
+[vars]
+# APP_ID = "YOUR_CLOUDFLARE_CALLS_APP_ID_HERE" # Only uncomment for local dev, remove for production
