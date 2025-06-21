@@ -13,3 +13,7 @@ bindings = [
 name = "testrealtime" # Or your desired Worker name
 main = "src/index.js" # Or "src/worker.js", depending on your file structure
 compatibility_date = "2024-05-18" # Keep a recent date (or current date if you want)
+
+[[migrations]]
+tag = "v1"
+new_classes = [ "ChatRoom" ]
