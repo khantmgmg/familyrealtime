@@ -3,5 +3,7 @@ main = "src/worker.js"
 workers_dev = true
 compatibility_date = "2025-06-21"
 
-[observability]
-enabled = true
+[durable_objects]
+bindings = [
+  { name = "CHAT_ROOM", class_name = "ChatRoom" } # This is the crucial Durable Object binding
+]
