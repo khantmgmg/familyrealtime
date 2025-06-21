@@ -5,10 +5,10 @@ var __name = (target, value) => __defProp(target, 'name', { value, configurable:
 import { DurableObject } from 'cloudflare:workers'; // Crucial for explicit DO declaration
 
 // 2. DURABLE OBJECT CLASS DEFINITION IMMEDIATELY AFTER IMPORTS
-var CharRoom = class extends DurableObject {
+var ChatRoom = class extends DurableObject {
 	// Explicitly extend DurableObject
 	static {
-		__name(this, 'CharRoom');
+		__name(this, 'ChatRoom');
 	}
 	/**
 	 * The constructor is invoked once upon creation of the Durable Object, i.e. the first call to
@@ -649,4 +649,4 @@ var index_default = {
 	},
 };
 
-export { CharRoom, index_default as default };
+export { ChatRoom, index_default as default };
