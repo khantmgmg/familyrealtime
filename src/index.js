@@ -374,7 +374,7 @@ const htmlContent = `
           console.log("Pushed local tracks to Calls API and set remote description.");
 
           // 4. Connect to the WebSocket signaling server
-          ws = new WebSocket('ws://' + location.host + '/websocket?room=' + roomId);
+          ws = new WebSocket('wss://' + location.host + '/websocket?room=' + roomId);
 
           ws.onopen = () => {
             console.log("WebSocket connected to signaling server!");
